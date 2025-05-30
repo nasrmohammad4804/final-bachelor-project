@@ -63,7 +63,11 @@ public class InvertedIndex {
 
         for (String word : uniqueWords) {
 
-            Integer wordInDocUnit = index.get(word).getLeft();
+
+            int wordInDocUnit = 0;
+            if (Optional.ofNullable(index.get(word)).isPresent())
+                wordInDocUnit = index.get(word).getLeft();
+
             score.put(word, Math.log((1.0 + totalDocs.size()) / (1.0 + wordInDocUnit)) + 1.0);
         }
         return score;
