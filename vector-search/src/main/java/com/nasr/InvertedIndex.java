@@ -1,14 +1,20 @@
 package com.nasr;
 
 import lombok.Data;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.*;
 
+import static com.nasr.TextCalculator.removeStopWords;
+import static com.nasr.TextCalculator.tokenize;
 import static java.util.Collections.singleton;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 @Data
 public class InvertedIndex {
+
 
     private final Map<String, MutablePair<Integer, List<Doc>>> index = new HashMap<>();
 
@@ -19,8 +25,8 @@ public class InvertedIndex {
     public void insertDocument(Doc doc) {
 
         totalDocs.add(doc);
-
-        List<String> tokenize = TextCalculator.tokenize(doc.getText());
+        String removedStopWordText = removeStopWords(doc.getText());
+        List<String> tokenize = tokenize(removedStopWordText);
         for (String token : tokenize) {
 
             MutablePair<Integer, List<Doc>> entry = index.get(token);
@@ -74,8 +80,10 @@ public class InvertedIndex {
 
     }
 
-    public Map<String,Double> calculateTFIDFDocument(String text) {
-        List<String> tokenize = TextCalculator.tokenize(text);
+    public Map<String, Double> calculateTFIDFDocument(String text) {
+
+        String removedStopWordText = removeStopWords(text);
+        List<String> tokenize = tokenize(removedStopWordText);
 
         Map<String, Double> tfScore = calculateTFDocument(tokenize);
         Map<String, Double> idfScore = calculateIDFDocument(tokenize);
@@ -90,6 +98,7 @@ public class InvertedIndex {
         return score;
 
     }
+
     public void calculateTFIDFDocument(Doc doc) {
 
         Map<String, Double> score = calculateTFIDFDocument(doc.getText());
@@ -100,5 +109,26 @@ public class InvertedIndex {
         for (Doc doc : totalDocs) {
             calculateTFIDFDocument(doc);
         }
+    }
+
+    public Set<Long> candidateDocumentBaseOnQuery(String query) {
+        String removedStopWords = removeStopWords(query);
+        List<String> tokenize = tokenize(removedStopWords);
+
+        Set<Doc> candidateDocs = new HashSet<>();
+
+        for (String token : tokenize) {
+
+            if (index.containsKey(token))
+                candidateDocs.addAll(index.get(token).getRight());
+        }
+        return candidateDocs.stream().map(Doc::getId).collect(toSet());
+    }
+
+    public Map<Long,Map<String,Double>> tfidfDocScoresById(Set<Long> docIds) {
+
+
+        return docIds.stream().map(docId ->  Map.entry(docId, tfidfDocScores.get(docId)))
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
