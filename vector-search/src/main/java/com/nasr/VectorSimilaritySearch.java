@@ -1,7 +1,11 @@
 package com.nasr;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import static java.lang.Math.pow;
 
 
 public class VectorSimilaritySearch {
@@ -27,21 +31,16 @@ public class VectorSimilaritySearch {
         double bestResult = -1;
         long docId = 0;
 
-        for (Map.Entry<Long, Map<String, Double>> entry : invertedIndex.getTfidfDocScores().entrySet()) {
+        Set<Long> docIds = invertedIndex.candidateDocumentBaseOnQuery(query);
+        Set<Map.Entry<Long, Map<String, Double>>> entries = invertedIndex.tfidfDocScoresById(docIds)
+                .entrySet();
+
+        for (Map.Entry<Long, Map<String, Double>> entry : entries) {
 
             Map<String, Double> docVector = entry.getValue();
+            double result = calculateWithCosineSimilarity(queryVector, docVector);
 
-            double result;
-            double dotProduct = 0;
-            double firstNormVector = 0, secondNormVector = 0;
-
-            for (Map.Entry<String, Double> docEntry : docVector.entrySet()) {
-
-                dotProduct += docEntry.getValue() * queryVector.getOrDefault(docEntry.getKey(), 0d);
-                firstNormVector = Math.pow(docEntry.getValue(), 2);
-                secondNormVector = Math.pow(docEntry.getValue(), 2);
-            }
-            result = (dotProduct / (Math.sqrt(firstNormVector) * Math.sqrt(secondNormVector)));
+            System.out.println("doc : " + (entry.getKey()) + " vector result is : " + result);
             if (result > bestResult) {
                 bestResult = result;
                 docId = entry.getKey();
@@ -53,6 +52,36 @@ public class VectorSimilaritySearch {
 
         return invertedIndex.getTotalDocs().stream().filter(doc -> doc.getId().equals(finalDocId))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("not founded"));
+    }
+
+    public double calculateWithCosineSimilarity(Map<String, Double> docVector, Map<String, Double> queryVector) {
+
+        Set<String> allTerms = new HashSet<>();
+
+        allTerms.addAll(docVector.keySet());
+        allTerms.addAll(queryVector.keySet());
+
+        double result;
+        double dotProduct = 0d;
+        double firstNormVector = 0d, secondNormVector = 0d;
+
+
+        for (String term : allTerms) {
+
+            double docTermValue = docVector.getOrDefault(term, 0.0);
+            double queryTermValue = queryVector.getOrDefault(term, 0.0);
+
+            dotProduct += docTermValue * queryTermValue;
+            firstNormVector += pow(docTermValue, 2);
+            secondNormVector += pow(queryTermValue, 2);
+        }
+        if (firstNormVector == 0.0 || secondNormVector == 0.0)
+            result = 0;
+
+        else
+            result = (dotProduct / (Math.sqrt(firstNormVector) * Math.sqrt(secondNormVector)));
+
+        return result;
     }
 
     public void print() {
