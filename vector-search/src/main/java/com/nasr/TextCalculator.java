@@ -12,4 +12,9 @@ public class TextCalculator {
                 .filter(token -> !token.isEmpty())
                 .collect(Collectors.toList());
     }
+
+    public static String removeStopWords(String text) {
+        return text.replaceAll("(\\bam\\b)|(\\bis\\b)|(\\ba\\b)|(\\bare\\b)|(\\band\\b)|(\\buses\\b)", "");
+
+    }
 }
