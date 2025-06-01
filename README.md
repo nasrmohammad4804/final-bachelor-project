@@ -159,7 +159,7 @@ core idea :
 1. it capture semantic meaning. <br/> forexample :
 
 
-      "How to cook pasta" ≈ "Pasta cooking instructions"
+      How to cook pasta" ≈ "Pasta cooking instructions
       two above sentence is not same but meaning is same
 
       
