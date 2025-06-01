@@ -136,4 +136,33 @@ Disadvantage of cosine
 </ul>
 
 
-## vector embedding
+## embedding vector search
+
+is process of finding most relevant vector to a query vector 
+
+Applications:
+<ul>
+<li>Text Search (SentenceTransformers/BERT)</li>
+<li>Image Similarity</li>
+<li>Recommendation System</li>
+</ul>
+
+core idea : 
+
+1. each item converted to <em>dense vector</em> (embedding)
+2. Given <em>query vector</em> we compute similarity between it and all stored vector
+3. Return <em>top-k closest</em> matches
+
+
+## why is better than previous solution( tfidf + cosine)
+
+1. it capture semantic meaning. <br/> forexample :
+
+
+      "How to cook pasta" ≈ "Pasta cooking instructions"
+      two above sentence is not same but meaning is same
+
+      
+
+
+   
