@@ -156,10 +156,11 @@ core idea :
 
 ## why is better than previous solution( tfidf + cosine)
 
-1. it capture semantic meaning. <br/> forexample :
+it capture semantic meaning.  
+forexample :
 
 
-      How to cook pasta" ≈ "Pasta cooking instructions
+      How to cook pasta" ≈ "Pasta cooking instructions <br/>
       two above sentence is not same but meaning is same
 
       
