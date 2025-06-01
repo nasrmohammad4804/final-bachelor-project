@@ -1,0 +1,5 @@
+
+website)
+
+    1) https://weaviate.io/blog/vector-embeddings-explained
+    2) https://www.ibm.com/think/topics/vector-embedding
