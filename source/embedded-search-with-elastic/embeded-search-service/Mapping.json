@@ -1,0 +1,28 @@
+{
+  "properties": {
+    "body": {
+      "type": "text"
+    },
+    "dimensions": {
+      "type": "dense_vector",
+      "dims": 384,
+      "index": true,
+      "similarity": "cosine"
+    },
+    "iconUrl": {
+      "type": "text"
+    },
+    "id": {
+      "type": "keyword"
+    },
+    "siteName": {
+      "type": "text"
+    },
+    "title": {
+      "type": "text"
+    },
+    "url": {
+      "type": "text"
+    }
+  }
+}
